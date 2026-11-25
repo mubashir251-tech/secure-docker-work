@@ -1,0 +1,9 @@
+{
+  "name": "secure-docker-lab",
+  "version": "1.0.0",
+  "description": "Docker image security lab",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  }
+}

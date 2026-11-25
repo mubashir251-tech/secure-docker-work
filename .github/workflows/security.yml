@@ -1,0 +1,41 @@
+name: Docker Security Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  docker-security:
+    name: Build and Security Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build and start secure container
+        run: docker compose up -d --build --wait --wait-timeout 60
+
+      - name: Run container security checks
+        run: ./security-check.sh
+
+      - name: Install Trivy
+        uses: aquasecurity/setup-trivy@v0.2.4
+        with:
+          version: latest
+
+      - name: Scan Docker image
+        run: |
+          trivy image \
+            --severity HIGH,CRITICAL \
+            --exit-code 1 \
+            secure-app:v1.0
+
+      - name: Cleanup
+        if: always()
+        run: docker compose down
