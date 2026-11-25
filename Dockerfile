@@ -6,6 +6,8 @@ WORKDIR /app
 
 COPY --chown=node:node app.js package.json ./
 
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
+
 USER node
 
 EXPOSE 3000
